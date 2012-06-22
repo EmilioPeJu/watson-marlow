@@ -1,0 +1,82 @@
+# % macro, P, Device prefix
+# % macro, Q, Device suffix
+# % macro, PORT, Asyn port name
+# % macro, name, Object and gui association name
+# % gui, $(name=), edm, watsonMarlow323Du.edl, device=$(P)$(Q)
+
+record(bo, "$(P)$(Q):DISABLE") {
+  field(DESC, "Disable comms")
+  field(PINI, "YES")
+  field(VAL, "1")
+  field(OMSL, "supervisory")
+  field(ZNAM, "Enabled")
+  field(ONAM, "Disabled")
+}
+
+record(stringin, "$(P)$(Q):INFO") {
+  field(DESC, "Get all pump information")
+  field(DTYP, "stream")
+  field(INP,  "@323Du.proto info($(P)$(Q)) $(PORT)")
+  field(SCAN, "1 second")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(bi, "$(P)$(Q):INFO:RUN") {
+  field(DESC, "Current run state: STARTed or STOPped")
+  field(ZNAM, "STOPped")
+  field(ONAM, "STARTed")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(ao, "$(P)$(Q):INFO:SPD") {
+  field(DESC, "Currently set pump speed")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(stringin, "$(P)$(Q):INFO:DIR") {
+  field(DESC, "Currently set pump direction")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(bo, "$(P)$(Q):SET:RUN") {
+  field(DESC, "Set running state: STARTed or STOPped")
+  field(ZNAM, "STOP")
+  field(ONAM, "START")
+  field(OUT, "$(P)$(Q):SET:RUNST PP")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(bo, "$(P)$(Q):SET:RUNST") {
+  field(DTYP, "stream")
+  field(SDIS, "$(P)$(Q):DISABLE")
+  field(ZNAM, "ST")
+  field(ONAM, "GO")
+  field(OUT,  "@323Du.proto setRun $(PORT)")
+}
+
+record(ao, "$(P)$(Q):SET:SPD") {
+  field(DESC, "Set pump speed")
+  field(DTYP, "stream")
+  field(OUT,  "@323Du.proto setSpd($(P)$(Q)) $(PORT)")
+  field(PREC, "0")
+  field(DRVH, "400")  
+  field(DRVL, "3")
+  field(VAL,  "3")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(bo, "$(P)$(Q):SET:DIR") {
+  field(DESC, "Set direction state - CW or CCW")
+  field(ZNAM, "CW")
+  field(ONAM, "CCW")
+  field(OUT, "$(P)$(Q):SET:DIRST PP")
+  field(SDIS, "$(P)$(Q):DISABLE")
+}
+
+record(bo, "$(P)$(Q):SET:DIRST") {
+  field(DTYP, "stream")
+  field(SDIS, "$(P)$(Q):DISABLE")
+  field(ZNAM, "RR")
+  field(ONAM, "RL")
+  field(OUT,  "@323Du.proto setDir $(PORT)")
+}

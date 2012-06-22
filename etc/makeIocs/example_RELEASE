@@ -1,1 +1,2 @@
 # Place any example specific dependencies here
+STREAMDEVICE=$(SUPPORT)/streamDevice/2-4dls6
